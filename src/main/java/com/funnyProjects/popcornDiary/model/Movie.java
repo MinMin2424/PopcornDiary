@@ -39,6 +39,9 @@ public class Movie {
     @Column(name = "country", nullable = false)
     private MovieCountry country;
 
+    @Column(name = "image_path", nullable = false)
+    private String imagePath;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;

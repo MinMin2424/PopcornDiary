@@ -37,6 +37,9 @@ public class Comic {
     @Column(name = "finished_date", nullable = true)
     private LocalDate finishedDate;
 
+    @Column(name = "image_path", nullable = false)
+    private String imagePath;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
