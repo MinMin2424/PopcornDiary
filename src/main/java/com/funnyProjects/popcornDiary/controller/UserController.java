@@ -6,6 +6,7 @@ package com.funnyProjects.popcornDiary.controller;
 
 import com.funnyProjects.popcornDiary.model.User;
 import com.funnyProjects.popcornDiary.service.UserService;
+import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -15,10 +16,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@AllArgsConstructor
 @RequestMapping("/api/users")
 public class UserController {
 
-    private UserService userService;
+    private final UserService userService;
 
     @GetMapping("/{userId}")
     public User getUser(@PathVariable Long userId) {

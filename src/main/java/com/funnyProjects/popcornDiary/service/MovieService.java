@@ -4,9 +4,9 @@
 
 package com.funnyProjects.popcornDiary.service;
 
-import com.funnyProjects.popcornDiary.exception.MovieNotFound;
-import com.funnyProjects.popcornDiary.exception.UserIdNotFound;
-import com.funnyProjects.popcornDiary.exception.UserNotFound;
+import com.funnyProjects.popcornDiary.exception.MovieNotFoundException;
+import com.funnyProjects.popcornDiary.exception.UserIdNotFoundException;
+import com.funnyProjects.popcornDiary.exception.UserNotFoundException;
 import com.funnyProjects.popcornDiary.model.Movie;
 import com.funnyProjects.popcornDiary.model.User;
 import com.funnyProjects.popcornDiary.model.enums.MovieCountry;
@@ -28,13 +28,14 @@ public class MovieService {
 
     @Transactional
     public List<Movie> getAllMovies(Long userId) {
+        checkUserId(userId);
         return movieRepository.findByUserId(userId);
     }
 
     @Transactional
     public Movie getMovie(Long movieId, Long userId) {
         return movieRepository.findByIdAndUserId(movieId, userId)
-                .orElseThrow(() -> new MovieNotFound("Movie with id " + movieId + " not found"));
+                .orElseThrow(() -> new MovieNotFoundException("Movie with id " + movieId + " not found"));
     }
 
     @Transactional
@@ -42,9 +43,10 @@ public class MovieService {
         checkUserId(userId);
         Optional<User> user = userRepository.findById(userId);
         if(user.isEmpty()) {
-            throw new UserNotFound("User with id " + userId + " not found");
+            throw new UserNotFoundException("User with id " + userId + " not found");
         }
         movie.setUser(user.get());
+        movie.setCountry(movie.getCountry().toLowerCase());
         return movieRepository.save(movie);
     }
 
@@ -52,11 +54,11 @@ public class MovieService {
     public Movie updateMovie(Long movieId, Movie updatedMovie, Long userId) {
         checkUserId(userId);
         Movie existingMovie = movieRepository.findByIdAndUserId(movieId, userId)
-                .orElseThrow(() -> new MovieNotFound("Movie with id " + movieId + " not found"));
+                .orElseThrow(() -> new MovieNotFoundException("Movie with id " + movieId + " not found"));
         existingMovie.setTitle(updatedMovie.getTitle());
         existingMovie.setYear(updatedMovie.getYear());
         existingMovie.setEpisodes(updatedMovie.getEpisodes());
-        existingMovie.setCountry(updatedMovie.getCountry());
+        existingMovie.setCountry(updatedMovie.getCountry().toLowerCase());
         existingMovie.setImagePath(updatedMovie.getImagePath());
         return movieRepository.save(existingMovie);
     }
@@ -68,22 +70,22 @@ public class MovieService {
     }
 
     @Transactional
-    public List<Movie> filterMovieByCountry(Long userId, MovieCountry country) {
+    public List<Movie> filterMovieByCountry(Long userId, String country) {
         checkUserId(userId);
-        return movieRepository.findByUserIdAndCountry(userId, country);
+        return movieRepository.findByUserIdAndCountry(userId, country.toLowerCase());
     }
 
     @Transactional
     public void deleteMovie(Long movieId, Long userId) {
         checkUserId(userId);
         Movie movie = movieRepository.findByIdAndUserId(movieId, userId)
-                .orElseThrow(() -> new MovieNotFound("Movie with id " + movieId + " not found"));
+                .orElseThrow(() -> new MovieNotFoundException("Movie with id " + movieId + " not found"));
         movieRepository.delete(movie);
     }
 
     private void checkUserId(Long userId) {
         if (!userRepository.existsById(userId)) {
-            throw new UserIdNotFound("User with id " + userId + " not found");
+            throw new UserIdNotFoundException("User with id " + userId + " not found");
         }
     }
 

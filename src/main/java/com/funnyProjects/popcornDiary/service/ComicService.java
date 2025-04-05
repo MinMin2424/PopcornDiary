@@ -4,12 +4,10 @@
 
 package com.funnyProjects.popcornDiary.service;
 
-import com.funnyProjects.popcornDiary.exception.ComicNotFound;
-import com.funnyProjects.popcornDiary.exception.MovieNotFound;
-import com.funnyProjects.popcornDiary.exception.UserIdNotFound;
-import com.funnyProjects.popcornDiary.exception.UserNotFound;
+import com.funnyProjects.popcornDiary.exception.ComicNotFoundException;
+import com.funnyProjects.popcornDiary.exception.UserIdNotFoundException;
+import com.funnyProjects.popcornDiary.exception.UserNotFoundException;
 import com.funnyProjects.popcornDiary.model.Comic;
-import com.funnyProjects.popcornDiary.model.Movie;
 import com.funnyProjects.popcornDiary.model.User;
 import com.funnyProjects.popcornDiary.repository.ComicRepository;
 import com.funnyProjects.popcornDiary.repository.UserRepository;
@@ -29,13 +27,14 @@ public class ComicService {
 
     @Transactional
     public List<Comic> getAllComics(Long userId) {
+        checkUserId(userId);
         return comicRepository.findByUserId(userId);
     }
 
     @Transactional
     public Comic getComic(Long comicId, Long userId) {
         return comicRepository.findByIdAndUserId(comicId, userId)
-                .orElseThrow(() -> new ComicNotFound("Comic with id " + comicId + " not found"));
+                .orElseThrow(() -> new ComicNotFoundException("Comic with id " + comicId + " not found"));
     }
 
     @Transactional
@@ -43,7 +42,7 @@ public class ComicService {
         checkUserId(userId);
         Optional<User> user = userRepository.findById(userId);
         if(user.isEmpty()) {
-            throw new UserNotFound("User with id " + userId + " not found");
+            throw new UserNotFoundException("User with id " + userId + " not found");
         }
         comic.setUser(user.get());
         return comicRepository.save(comic);
@@ -53,7 +52,7 @@ public class ComicService {
     public Comic updateComic(Long comicId, Comic updatedComic, Long userId) {
         checkUserId(userId);
         Comic existingComic = comicRepository.findByIdAndUserId(comicId, userId)
-                .orElseThrow(() -> new ComicNotFound("Comic with id " + comicId + " not found"));
+                .orElseThrow(() -> new ComicNotFoundException("Comic with id " + comicId + " not found"));
         existingComic.setTitle(updatedComic.getTitle());
         existingComic.setChapters(updatedComic.getChapters());
         existingComic.setFinishedDate(updatedComic.getFinishedDate());
@@ -65,13 +64,13 @@ public class ComicService {
     public void deleteComic(Long comicId, Long userId) {
         checkUserId(userId);
         Comic comic = comicRepository.findByIdAndUserId(comicId, userId)
-                .orElseThrow(() -> new ComicNotFound("Comic with id " + comicId + " not found"));
+                .orElseThrow(() -> new ComicNotFoundException("Comic with id " + comicId + " not found"));
         comicRepository.delete(comic);
     }
 
     private void checkUserId(Long userId) {
         if (!userRepository.existsById(userId)) {
-            throw new UserIdNotFound("User with id " + userId + " not found");
+            throw new UserIdNotFoundException("User with id " + userId + " not found");
         }
     }
 }

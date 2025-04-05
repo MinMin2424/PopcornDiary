@@ -6,6 +6,7 @@ package com.funnyProjects.popcornDiary.controller;
 
 import com.funnyProjects.popcornDiary.model.Movie;
 import com.funnyProjects.popcornDiary.service.MovieService;
+import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,10 +19,11 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
+@AllArgsConstructor
 @RequestMapping("/api/users/{userId}/movies")
 public class MovieController {
 
-    private MovieService movieService;
+    private final MovieService movieService;
 
     @GetMapping
     public List<Movie> getAllMovies(@PathVariable Long userId) {

@@ -4,6 +4,7 @@
 
 package com.funnyProjects.popcornDiary.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -33,6 +34,7 @@ public class User {
     @Column(name = "password", nullable = false)
     private String password;
 
+    @JsonManagedReference
     @OneToMany(mappedBy = "user",
                 cascade = CascadeType.ALL,
                 orphanRemoval = true)

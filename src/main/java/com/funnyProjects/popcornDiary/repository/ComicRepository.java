@@ -1,7 +1,6 @@
 package com.funnyProjects.popcornDiary.repository;
 
 import com.funnyProjects.popcornDiary.model.Comic;
-import com.funnyProjects.popcornDiary.model.Movie;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

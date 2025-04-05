@@ -4,7 +4,7 @@
 
 package com.funnyProjects.popcornDiary.model;
 
-import com.funnyProjects.popcornDiary.model.enums.MovieCountry;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -37,11 +37,12 @@ public class Movie {
     private Integer episodes;
 
     @Column(name = "country", nullable = false)
-    private MovieCountry country;
+    private String country;
 
     @Column(name = "image_path", nullable = false)
     private String imagePath;
 
+    @JsonBackReference
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
